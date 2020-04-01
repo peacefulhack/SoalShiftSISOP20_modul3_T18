@@ -22,7 +22,9 @@ int carpok = 0;
 char nama[50];
 int pilihan = 0;
 int pilihan2=0;
-pthread_t tid[8];
+
+pthread_t tid[9];
+
 int cetekan = 0;
 char message[50];
 int message1 = 0;
@@ -43,13 +45,15 @@ int ap[7]={0,0,0,0,0,0,0};
 
 //Item
 int item[3]={10,10,10};
+int dump;
 
 //Uang
-int dollar=0;
+int dollar=10000;
 int dolpok=0;
 
+//pokemon
 int pokeid = 0;
-
+int pokmon[7];
 void* nama_pokemon()
 {
   pokeid = *pokesm;
@@ -85,7 +89,83 @@ void* nama_pokemon()
   if(pokeid == 531){strcpy(nama,"Shiny Articuno");  dolpok=5200;}
 }
 
+void dowhat(int i)
+{
+    if(ap[i]!=0){
+      dollar += pokmon[i];
+      pokmon[i]=0;
+    }
+    if(i<6){
+      for(int k=i; k<6;k++){
+        ap[k]=ap[k+1];
+      }
+      ap[6]=0;
+    }
+    if(i==0){
+      memset(npoke1,0,50);
+      strcat(npoke1,npoke2);
+      memset(npoke2,0,50);
+      strcat(npoke2,npoke3);
+      memset(npoke3,0,50);
+      strcat(npoke3,npoke4);
+      memset(npoke4,0,50);
+      strcat(npoke4,npoke5);
+      memset(npoke5,0,50);
+      strcat(npoke5,npoke6);
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
 
+    }
+    else if(i==1){
+      memset(npoke2,0,50);
+      strcat(npoke2,npoke3);
+      memset(npoke3,0,50);
+      strcat(npoke3,npoke4);
+      memset(npoke4,0,50);
+      strcat(npoke4,npoke5);
+      memset(npoke5,0,50);
+      strcat(npoke5,npoke6);
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
+    }
+    else if(i==2){
+      memset(npoke3,0,50);
+      strcat(npoke3,npoke4);
+      memset(npoke4,0,50);
+      strcat(npoke4,npoke5);
+      memset(npoke5,0,50);
+      strcat(npoke5,npoke6);
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
+    }
+    else if(i==3){
+      memset(npoke4,0,50);
+      strcat(npoke4,npoke5);
+      memset(npoke5,0,50);
+      strcat(npoke5,npoke6);
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
+    }
+    else if(i==4){
+      memset(npoke5,0,50);
+      strcat(npoke5,npoke6);
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
+    }
+    else if(i==5){
+      memset(npoke6,0,50);
+      strcat(npoke6,npoke7);
+      memset(npoke7,0,50);
+    }
+    else if(i==6){
+      memset(npoke7,0,50);
+    }
+}
 
 void* menu(void *arg)
 {
@@ -112,12 +192,59 @@ void* menu(void *arg)
         printf("3: Shop\n" );
         printf("4: Go to Capture Mode\n");
         printf("5: Exit\n\n" );
+        printf("=====================\n" );
+        printf("jumlah pokemon : %d\n", jmlh_poke);
+        printf("jumlah Uang    : %d\n", dollar);
+        printf("jumlah pokeball: %d\n", item[0]);
+        printf("jumlah lullaby : %d\n", item[1]);
+        printf("jumlah berry   : %d\n", item[2]);
+        printf("=====================\n" );
         printf("pilihan anda:\n");
         if(message1==1){
           printf("%s\n", message);
           message1 = 0;
         }
 
+    }
+  }
+}
+void* shop(void *arg)
+{
+  pid_t child;
+  char *argv1[] = {"clear", NULL};
+
+  pthread_t id = pthread_self();
+  if(pthread_equal(id,tid[0]))
+  {
+    child = fork();
+    if(child==0){
+      execv("/usr/bin/clear", argv1);
+    }
+    else{
+      child =wait(NULL);
+        printf("Kang pokeball bulat dadakan 500an:\n\n" );
+        printf("=====================\n" );
+        printf("opsi dagangan:\n");
+        printf("1.jumlah Stok pokeball : %d\n", *pokeball);
+        printf("2.jumlah Stok lullaby : %d\n", *lp);
+        printf("3.jumlah stok berry   : %d\n", *berry);
+        printf("=====================\n" );
+        printf("=====================\n" );
+        printf("Inventory:\n" );
+        printf("jumlah pokeball     : %d\n", item[0]);
+        printf("jumlah lullaby      : %d\n", item[1]);
+        printf("jumlah berry        : %d\n", item[2]);
+        printf("=====================\n" );
+        printf("pilihan anda:\n");
+        printf("1.beli pokeball\n" );
+        printf("2.beli lullaby\n" );
+        printf("3.beli berry\n" );
+        printf("4.exit\n" );
+        if(message1==1){
+          printf("%s\n", message);
+          memset(message,0,50);
+          message1 = 0;
+        }
     }
   }
 }
@@ -135,23 +262,68 @@ void* pokedex(void *arg)
     }
     else{
       child =wait(NULL);
-        printf("POKEDEX\n" );
-        printf("%s\n", npoke1);
-        printf("%d\n", ap[0]);
-        printf("%s\n", npoke2);
-        printf("%d\n", ap[1]);
-        printf("%s\n", npoke3);
-        printf("%d\n", ap[2]);
-        printf("%s\n", npoke4);
-        printf("%d\n", ap[3]);
-        printf("%s\n", npoke5);
-        printf("%d\n", ap[4]);
-        printf("%s\n", npoke6);
-        printf("%d\n", ap[5]);
-        printf("%s\n", npoke7);
-        printf("%d\n", ap[6]);
-        sleep(2);
-
+      printf("POKEDEX\n" );
+      printf("1*%s\n", npoke1);
+      printf(" *%d\n", ap[0]);
+      printf("2*%s\n", npoke2);
+      printf(" *%d\n", ap[1]);
+      printf("3*%s\n", npoke3);
+      printf(" *%d\n", ap[2]);
+      printf("4*%s\n", npoke4);
+      printf(" *%d\n", ap[3]);
+      printf("5*%s\n", npoke5);
+      printf(" *%d\n", ap[4]);
+      printf("6*%s\n", npoke6);
+      printf(" *%d\n", ap[5]);
+      printf("7*%s\n", npoke7);
+      printf(" *%d\n", ap[6]);
+      printf("\njumlah berry %d\n", item[2]);
+      printf("Untuk menghapus pokemon, tekan pilihan 1-7\n" );
+      printf("tekan 8 untuk memberi berry\n");
+      printf("untuk keluar tekan 9\n" );
+      int pilgan=0;
+        scanf("%d", &pilgan);
+        switch (pilgan) {
+          case 1:
+            dowhat(0);
+            jmlh_poke--;
+            break;
+          case 2:
+            dowhat(1);
+            jmlh_poke--;
+            break;
+          case 3:
+            dowhat(2);
+            jmlh_poke--;
+            break;
+          case 4:
+            dowhat(3);
+            jmlh_poke--;
+            break;
+          case 5:
+            dowhat(4);
+            jmlh_poke--;
+            break;
+          case 6:
+            dowhat(5);
+            jmlh_poke--;
+            break;
+          case 7:
+            dowhat(6);
+            jmlh_poke--;
+            break;
+          case 8:
+            if(item[2]>0){
+              item[2]--;
+              for(int p=0;p<jmlh_poke;p++){
+                ap[p]+=10;
+              }
+            }
+            break;
+          case 9:
+            return NULL;
+            break;
+        }
     }
   }
 }
@@ -186,91 +358,22 @@ void* apred(void *arg)
     int cek;
     while(1)
     {
-      while(*cmsm==1){
+      while(*cmsm!=1){
         sleep(10);
-      }
-      for(int i=0;i<7;i++){
-        if(ap>10){
-          ap[i]-=10;
-        }
-        else{
-          ap[i]=0;
-          cek = rand() % 99;
-          if(cek<10){
-            ap[i]+=50;
+        for(int i=0;i<jmlh_poke;i++){
+          if(ap[i]>10){
+            ap[i]-=10;
           }
           else{
-            if(i<6){
-              for(int k=i; k<6;k++){
-                ap[k]=ap[k+1];
-              }
-              ap[6]=0;
+            ap[i]=0;
+            cek = rand() % 99;
+            if(cek<10){
+              ap[i]+=50;
             }
-            if(i==0){
-              memset(npoke1,0,50);
-              strcat(npoke1,npoke2);
-              memset(npoke2,0,50);
-              strcat(npoke2,npoke3);
-              memset(npoke3,0,50);
-              strcat(npoke3,npoke4);
-              memset(npoke4,0,50);
-              strcat(npoke4,npoke5);
-              memset(npoke5,0,50);
-              strcat(npoke5,npoke6);
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-
+            else{
+              dowhat(i);
+              jmlh_poke--;
             }
-            else if(i==1){
-              memset(npoke2,0,50);
-              strcat(npoke2,npoke3);
-              memset(npoke3,0,50);
-              strcat(npoke3,npoke4);
-              memset(npoke4,0,50);
-              strcat(npoke4,npoke5);
-              memset(npoke5,0,50);
-              strcat(npoke5,npoke6);
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-            }
-            else if(i==2){
-              memset(npoke3,0,50);
-              strcat(npoke3,npoke4);
-              memset(npoke4,0,50);
-              strcat(npoke4,npoke5);
-              memset(npoke5,0,50);
-              strcat(npoke5,npoke6);
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-            }
-            else if(i==3){
-              memset(npoke4,0,50);
-              strcat(npoke4,npoke5);
-              memset(npoke5,0,50);
-              strcat(npoke5,npoke6);
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-            }
-            else if(i==4){
-              memset(npoke5,0,50);
-              strcat(npoke5,npoke6);
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-            }
-            else if(i==5){
-              memset(npoke6,0,50);
-              strcat(npoke6,npoke7);
-              memset(npoke7,0,50);
-            }
-            else if(i==6){
-              memset(npoke7,0,50);
-            }
-            jmlh_poke--;
           }
         }
       }
@@ -334,12 +437,15 @@ void main()
   srand(time(NULL));
   pthread_create(&tid[7],NULL,&apred,NULL);
 
+    int pilgan2=0;
   while(pilihan != 5){
+    pilgan2=0;
     pthread_create(&tid[0],NULL,&menu,NULL);
     pthread_join(tid[0],NULL);
     scanf("%d", &pilihan);
     if(carpok==1 && pilihan!=1){
       pthread_join(tid[2],NULL);
+      printf("ketemu!\n" );
     }
     switch (pilihan) {
       case 1:
@@ -362,6 +468,55 @@ void main()
         pthread_create(&tid[5],NULL,&pokedex,NULL);
         pthread_join(tid[5],NULL);
         break;
+      case 3:
+        while(pilgan2!=4){
+          pthread_create(&tid[8],NULL,&shop,NULL);
+          pthread_join(tid[8],NULL);
+          scanf("%d", &pilgan2);
+          switch (pilgan2) {
+            case 1:
+              //5
+              if(dollar<5){
+                strcat(message,"uang tidak cukup");
+                message1++;
+              }
+              else{
+                dollar-=5;
+                item[0]++;
+                dump = *pokeball;
+                dump--;
+                *pokeball = dump;
+              }
+              break;
+            case 2:
+              if(dollar<60){
+                strcat(message,"uang tidak cukup");
+                message1++;
+              }
+              else{
+                dollar-=60;
+                item[1]++;
+                dump = *lp;
+                dump--;
+                *lp = dump;
+              }
+              break;
+            case 3:
+              if(dollar<15){
+                strcat(message,"uang tidak cukup");
+                message1++;
+              }
+              else{
+                dollar-=15;
+                item[2]++;
+                dump = *berry;
+                dump--;
+                *berry = dump;
+              }
+              break;
+          }
+        }
+        break;
       case 4:
         *cmsm = 1;
         if(cetekan==1){
@@ -380,8 +535,8 @@ void main()
                 message1 =1;
               }
               else if(*captur == 999){
-                printf("pokemon ditangkap!\n" );
                 strcat(message, "pokemon telah ditangkap");
+                pokmon[jmlh_poke] = dolpok;
                 message1 = 1;
                 *cmsm = 0;
                 if(jmlh_poke==6){
@@ -413,11 +568,12 @@ void main()
                   ap[0] = 100;
                 }
                 else{
-                  strcat(message,"Pokemon telah penuh\n");
+                  strcat(message,"Pokemon dilepas\n");
                   message1 = 1;
                   dollar+=dolpok;
                   cmsm=0;
                 }
+                jmlh_poke++;
               }
             }
             break;
