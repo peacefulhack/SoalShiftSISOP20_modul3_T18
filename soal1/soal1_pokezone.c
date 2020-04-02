@@ -30,17 +30,48 @@ int bucket = 0;
 int captrand = 0;
 pthread_t tid[Num];
 
-int shutdown()
+//deklarasi shared memory
+int pshmid;
+int shtshmid;
+int cmshmid;
+int ulpshmid;
+int lpshmid;
+int pokshmid;
+int bershmid;
+int sttshmid;
+int capshmid;
+
+void* shutdown(void* arg)
 {
-  pid_t pid;
-  pid = fork();
-  if(pid == 0){
-    char *argv[] = {"pkill", "-9", "soal1t", NULL};
-    execv("/bin/pkill", argv);
-  }
-  else{
-    pid = wait(NULL);
-    exit(0);
+  while(1){
+    if(*shutsm==1){
+      pid_t shutt;
+      shutt = fork();
+      if(shutt==0){
+        shmdt(pokesm);
+        shmdt(cmsm);
+        shmdt(ulpsm);
+        shmdt(pokeball);
+        shmdt(berry);
+        shmdt(status);
+        shmdt(captur);
+        shmdt(shutsm);
+        shmctl(pshmid  , IPC_RMID, NULL);
+        shmctl(shtshmid, IPC_RMID, NULL);
+        shmctl(cmshmid , IPC_RMID, NULL);
+        shmctl(ulpshmid, IPC_RMID, NULL);
+        shmctl(pokshmid, IPC_RMID, NULL);
+        shmctl(lpshmid , IPC_RMID, NULL);
+        shmctl(sttshmid, IPC_RMID, NULL);
+        shmctl(capshmid, IPC_RMID, NULL);
+        shmctl(bershmid, IPC_RMID, NULL);
+      }
+      else if(shutt>0){
+        shutt = wait(NULL);
+        char *argv[] = {"pkill", "-9", "pokezone", NULL};
+        execv("/bin/pkill", argv);
+      }
+    }
   }
 }
 void* pokemon(void* arg)
@@ -106,22 +137,28 @@ void* pokemon(void* arg)
 }
 void* lullaby(void* arg)
 {
-
-    pthread_t id = pthread_self();
-    if(pthread_equal(id,tid[2])){
-      caprate +=20;
-    }
-    else if(pthread_equal(id,tid[3])){
-      besrate = esrate;
-      esrate = 0;
+    while(1){
+      if(*ulpsm==1){
+        pthread_t id = pthread_self();
+        if(pthread_equal(id,tid[2])){
+          printf("ulpsm activated 1\n" );
+          caprate +=20;
+          sleep(10);
+          caprate -=20;
+          printf("ulpsm deactivated 1\n" );
+        }
+        else if(pthread_equal(id,tid[3])){
+          printf("ulpsm activated 2\n" );
+          besrate = esrate;
+          esrate = 0;
+          sleep(10);
+          esrate = besrate;
+          printf("ulpsm deactivated 2\n" );
+        }
+        if(*ulpsm==1){*ulpsm=0;}
+      }
     }
     return NULL;
-}
-void* restore(void* arg)
-{
-    sleep(10);
-    esrate = besrate;
-    caprate -=20;
 }
 void* capture(void* arg)
 {
@@ -135,10 +172,11 @@ void* capture(void* arg)
       else if(*captur%10==3){bucket+=30;}
       captrand = (rand()%100)+1;
       if(captrand <= bucket){
+        printf("penangkapan berhasil\n" );
         *captur=999;
         *status=1;
       }
-      else{*captur=0;*status=2;}
+      else{*captur=0;*status=2;printf("penangkapan gagal\n" );}
     }
     sleep(1);
   }
@@ -204,6 +242,10 @@ int main(int argc, char *argv[])
       }
     }
     else{
+
+        pthread_create( &tid[2], NULL, &lullaby, NULL);
+        pthread_create( &tid[3], NULL, &lullaby, NULL);
+        pthread_create( &tid[3], NULL, &shutdown, NULL);
       while(1){
           pthread_create( &tid[0], NULL, &pokemon, NULL);
           pthread_create( &tid[1], NULL, &pokemon, NULL);
@@ -212,15 +254,6 @@ int main(int argc, char *argv[])
           *pokesm = hasil;
           if(*cmsm == 1){
             printf("Combat mode activated\n" );
-            if(*ulpsm == 1){
-              pthread_create( &tid[2], NULL, &lullaby, NULL);
-              pthread_create( &tid[3], NULL, &lullaby, NULL);
-              pthread_join(tid[2], NULL);
-              pthread_join(tid[3], NULL);
-              pthread_create( &tid[4], NULL, &restore, NULL);
-              pthread_join(tid[4], NULL);
-              *ulpsm = 0;
-            }
             int st = 0;
             while(*status == 0){
               st = (rand() % 100) + 1;

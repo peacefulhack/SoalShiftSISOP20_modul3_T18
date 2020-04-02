@@ -54,6 +54,46 @@ int dolpok=0;
 //pokemon
 int pokeid = 0;
 int pokmon[7];
+
+//deklarasi shared memory
+int pshmid;
+int shtshmid;
+int cmshmid;
+int ulpshmid;
+int lpshmid;
+int pokshmid;
+int bershmid;
+int sttshmid;
+int capshmid;
+void* shutdown()
+{
+  pid_t shutt;
+  shutt = fork();
+  if(shutt==0){
+    shmdt(pokesm);
+    shmdt(cmsm);
+    shmdt(ulpsm);
+    shmdt(pokeball);
+    shmdt(berry);
+    shmdt(status);
+    shmdt(captur);
+    shmdt(shutsm);
+    shmctl(pshmid  , IPC_RMID, NULL);
+    shmctl(shtshmid, IPC_RMID, NULL);
+    shmctl(cmshmid , IPC_RMID, NULL);
+    shmctl(ulpshmid, IPC_RMID, NULL);
+    shmctl(pokshmid, IPC_RMID, NULL);
+    shmctl(lpshmid , IPC_RMID, NULL);
+    shmctl(sttshmid, IPC_RMID, NULL);
+    shmctl(capshmid, IPC_RMID, NULL);
+    shmctl(bershmid, IPC_RMID, NULL);
+  }
+  else if(shutt>0){
+    shutt = wait(NULL);
+    char *argv[] = {"pkill", "-9", "traizone", NULL};
+    execv("/bin/pkill", argv);
+  }
+}
 void* nama_pokemon()
 {
   pokeid = *pokesm;
@@ -88,7 +128,6 @@ void* nama_pokemon()
   if(pokeid == 530){strcpy(nama,"Articuno");        dolpok=200;}
   if(pokeid == 531){strcpy(nama,"Shiny Articuno");  dolpok=5200;}
 }
-
 void dowhat(int i)
 {
     if(ap[i]!=0){
@@ -166,7 +205,6 @@ void dowhat(int i)
       memset(npoke7,0,50);
     }
 }
-
 void* menu(void *arg)
 {
   pid_t child;
@@ -347,6 +385,7 @@ void* menu2(void *arg)
         printf("3: Kabur\n" );
         printf("4: Exit\n\n" );
         printf("Wild %s has appeared!\n", nama);
+        printf("status ulpsm : %d\n", *ulpsm);
         printf("pilihan anda:\n");
 
     }
@@ -520,69 +559,76 @@ void main()
       case 4:
         *cmsm = 1;
         if(cetekan==1){
-        pthread_create(&tid[6],NULL,&menu2,NULL);
-        pthread_join(tid[6],NULL);
-        scanf("%d", &pilihan2);
-        switch(pilihan2){
-          case 1:
-            if(item[1]<=0){}
-            else{
-              item[1] -= 1;
-              *captur=pokeid;
-              sleep(3);
-              if(*captur == 0){
-                strcat(message,"Pokemon lepas dari pokeball\n");
-                message1 =1;
-              }
-              else if(*captur == 999){
-                strcat(message, "pokemon telah ditangkap");
-                pokmon[jmlh_poke] = dolpok;
-                message1 = 1;
-                *cmsm = 0;
-                if(jmlh_poke==6){
-                  strcat(npoke7,nama);
-                  ap[6] = 100;
-                }
-                else if(jmlh_poke==5){
-                  strcat(npoke6,nama);
-                  ap[5]=100;
-                }
-                else if(jmlh_poke==4){
-                  strcat(npoke5,nama);
-                  ap[4] = 100;
-                }
-                else if(jmlh_poke==3){
-                  strcat(npoke4,nama);
-                  ap[3]=100;
-                }
-                else if(jmlh_poke==2){
-                  strcat(npoke3,nama);
-                  ap[2] = 100;
-                }
-                else if(jmlh_poke==1){
-                  strcat(npoke2,nama);
-                  ap[1]=100;
-                }
-                else if(jmlh_poke==0){
-                  strcat(npoke1,nama);
-                  ap[0] = 100;
-                }
+          while(pilihan2!=3){
+            pthread_create(&tid[6],NULL,&menu2,NULL);
+            pthread_join(tid[6],NULL);
+            scanf("%d", &pilihan2);
+            switch(pilihan2){
+              case 1:
+                if(item[1]<=0){}
                 else{
-                  strcat(message,"Pokemon dilepas\n");
-                  message1 = 1;
-                  dollar+=dolpok;
-                  cmsm=0;
+                  item[1] -= 1;
+                  *captur=pokeid;
+                  sleep(3);
+                  if(*captur == 0){
+                    strcat(message,"Pokemon lepas dari pokeball\n");
+                    message1 =1;
+                    break;
+                  }
+                  else if(*captur == 999){
+                    strcat(message, "pokemon telah ditangkap");
+                    pokmon[jmlh_poke] = dolpok;
+                    message1 = 1;
+                    *cmsm = 0;
+                    if(jmlh_poke==6){
+                      strcat(npoke7,nama);
+                      ap[6] = 100;
+                    }
+                    else if(jmlh_poke==5){
+                      strcat(npoke6,nama);
+                      ap[5]=100;
+                    }
+                    else if(jmlh_poke==4){
+                      strcat(npoke5,nama);
+                      ap[4] = 100;
+                    }
+                    else if(jmlh_poke==3){
+                      strcat(npoke4,nama);
+                      ap[3]=100;
+                    }
+                    else if(jmlh_poke==2){
+                      strcat(npoke3,nama);
+                      ap[2] = 100;
+                    }
+                    else if(jmlh_poke==1){
+                      strcat(npoke2,nama);
+                      ap[1]=100;
+                    }
+                    else if(jmlh_poke==0){
+                      strcat(npoke1,nama);
+                      ap[0] = 100;
+                    }
+                    else{
+                      strcat(message,"Pokemon dilepas\n");
+                      message1 = 1;
+                      dollar+=dolpok;
+                      cmsm=0;
+                    }
+                    jmlh_poke++;
+                    break;
+                  }
                 }
-                jmlh_poke++;
-              }
+                break;
+              case 2:
+                *ulpsm = 1;
+                break;
+              case 3:
+                *cmsm = 0;
+                break;
+              case 4:
+                //exit(EXIT_SUCCESS);
+                break;
             }
-            break;
-          case 2:
-            break;
-          case 3:
-            break;
-          case 4:
-            break;
         }
         cetekan=0;
         break;
@@ -591,6 +637,12 @@ void main()
           printf("maaf anda harus mencari pokemon terlebih dulu nub\n" );
           break;
         }
+    case 5:
+      *shutsm=1;
+      sleep(5);
+      shutdown();
+      exit(EXIT_SUCCESS);
+      break;
     }
   }
 }
