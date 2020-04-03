@@ -7,7 +7,7 @@
 #include <string.h>
 
 int matrix[4][5];
-
+//struct sama
 struct args {
   int q;
   int w;
