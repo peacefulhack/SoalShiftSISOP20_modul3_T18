@@ -21,7 +21,6 @@ struct args {
   int q;
   int w;
 };
-
 void *kali(void* arg) {
   int q = ((struct args*)arg)->q;
   int w = ((struct args*)arg)->w;
@@ -51,20 +50,14 @@ int main() {
     printf("\n");
   }
 
-  key_t key = 1111;
-  int *smmat45[4][5];
+  key_t key = 1234;
+  int *smmat45;
 
   int shmid = shmget(key, sizeof(mat45), IPC_CREAT | 0666);
-
-  for (int q = 0; q < 4; q++) {
-    for (int w = 0; w < 5; w++) {
-      smmat45[q][w] = shmat(shmid, NULL, 0);
-      *smmat45[q][w] = mat45[q][w];
-    }
-  }
-  for(int q=0; q<4; q++){
-    for(int w=0; w<5; w++){
-      shmdt(smmat45[q][w]);
-    }
-  }
+  smmat45 = shmat(shmid, NULL, 0);
+  int *inherit = (int*)smmat45;
+  memcpy(inherit, mat45, 80);
+  shmdt(smmat45);
+  exit(0);
+  return 0;
 }
