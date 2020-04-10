@@ -5,6 +5,8 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <sys/types.h>
+#include <dirent.h>
 
 
 static void move_file(const char *filename);
@@ -17,8 +19,6 @@ int main(int argc, char *argv[])
 	char *tok = NULL;
     char type[80] = {0};
 
-    if(argc == 1) return 0;
-
     if(strcmp(argv[1], "-f")==0)
     {
         for(int i = 2;i<argc;i++)//start with first arg 
@@ -28,8 +28,30 @@ int main(int argc, char *argv[])
         }
     }
 
+    // jika */
+
+    else if(strcmp(argv[1], "/*")==0)
+    {
+        DIR *d;
+        struct dirent *dir;
+        d = opendir(".");
+        if (d) 
+        {
+
+         while ((dir = readdir(d)) != NULL) 
+         {
+            move_file(dir->d_name);
+         }
+
+         closedir(d);
+        }
+
+     }
+
     return 0;
+
 }
+
 
 
 static void move_file(const char *filename)
