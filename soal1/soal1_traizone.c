@@ -488,7 +488,7 @@ void main()
     }
     switch (pilihan) {
       case 1:
-        printf("disini jalan\n" );
+        printf("disini jalan\n");
         sleep(1);
         if(carpok==0){
         carpok = 1;
@@ -559,13 +559,13 @@ void main()
       case 4:
         *cmsm = 1;
         if(cetekan==1){
-          while(pilihan2!=3){
+          while(pilihan2!=3 && *cmsm==1){
             pthread_create(&tid[6],NULL,&menu2,NULL);
             pthread_join(tid[6],NULL);
             scanf("%d", &pilihan2);
             switch(pilihan2){
               case 1:
-                if(item[1]<=0){}
+                if(item[1]<=0){printf("anda tidak memiliki pokeball\n" );break;}
                 else{
                   item[1] -= 1;
                   *captur=pokeid;
@@ -573,6 +573,7 @@ void main()
                   if(*captur == 0){
                     strcat(message,"Pokemon lepas dari pokeball\n");
                     message1 =1;
+                    *cmsm=0;
                     break;
                   }
                   else if(*captur == 999){
@@ -612,7 +613,6 @@ void main()
                       strcat(message,"Pokemon dilepas\n");
                       message1 = 1;
                       dollar+=dolpok;
-                      cmsm=0;
                     }
                     jmlh_poke++;
                     break;

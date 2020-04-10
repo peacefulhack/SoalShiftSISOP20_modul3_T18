@@ -167,7 +167,7 @@ void* capture(void* arg)
       printf("Trying to catch with weak hand and pokeball\n" );
       if(*captur%10==1){bucket-=20;}
       *captur/=10;
-      if(*captur%10==1){bucket+=170;}
+      if(*captur%10==1){bucket+=70;}
       else if(*captur%10==2){bucket+=50;}
       else if(*captur%10==3){bucket+=30;}
       captrand = (rand()%100)+1;
