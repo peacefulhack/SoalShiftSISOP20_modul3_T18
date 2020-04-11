@@ -330,6 +330,28 @@ https://github.com/nikhilroxtomar/Multiple-Client-Server-Program-in-C-using-fork
 <h2>Penyelesaian</h2>
 
 <p> dua fungsi move_file dan mk_directory untuk memindahkan dan membuat folder</p>
+
+```c
+	static void move_file(const char *filename)
+	{
+    	char *dot = strrchr(filename, '.');
+       	 mk_directory(dot + 1);
+   	 size_t namelen = strlen(dot + 1) + strlen(filename) + sizeof("/");
+   	 char *buffer = malloc(namelen);
+   	 sprintf(buffer, "%s/%s", dot + 1, filename);
+   	 rename(filename, buffer);
+   	 free(buffer);
+	}
+	
+	static void mk_directory(const char *dirname)
+	{
+		char *dot = strrchr(dirname, '.');
+   		mkdir(dirname, 0755);
+ 	}	
+
+
+	
+```
 <h2>Kesulitan</h2>
 <p>menentukan fungsi dan cara mengkategorikan dan memindahkan file ke folder tertentu, dan memastikan /* dapat berjalan dan mengkategorikan semua file <p>
 	
