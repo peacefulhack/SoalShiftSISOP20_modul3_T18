@@ -330,33 +330,33 @@ https://github.com/nikhilroxtomar/Multiple-Client-Server-Program-in-C-using-fork
 <h2>Penyelesaian</h2>
 
 <p> dua fungsi move_file dan mk_directory untuk memindahkan dan membuat folder</p>
-```static void move_file(const char *filename)
-{
+```	static void move_file(const char *filename)
+	{
 
-    char *dot = strrchr(filename, '.');
+    	char *dot = strrchr(filename, '.');
     
-    mk_directory(dot + 1);
+   	 mk_directory(dot + 1);
 
-    size_t namelen = strlen(dot + 1) + strlen(filename) + sizeof("/");
+   	 size_t namelen = strlen(dot + 1) + strlen(filename) + sizeof("/");
 
-    char *buffer = malloc(namelen);
+   	 char *buffer = malloc(namelen);
 
-    sprintf(buffer, "%s/%s", dot + 1, filename);
+   	 sprintf(buffer, "%s/%s", dot + 1, filename);
 
-    rename(filename, buffer);
+   	 rename(filename, buffer);
 
-    free(buffer);
-}
+   	 free(buffer);
+	}
 
+	
+	static void mk_directory(const char *dirname)
+	{
+	
+		char *dot = strrchr(dirname, '.');
 
-static void mk_directory(const char *dirname)
-{
-
-	char *dot = strrchr(dirname, '.');
-
-   	mkdir(dirname, 0755);
+   		mkdir(dirname, 0755);
     
-}
+	}	
 ```
 
 
@@ -365,11 +365,7 @@ static void mk_directory(const char *dirname)
 	
 
 <h2>Source</h2>
-https://www.geeksforgeeks.org/multithreading-c-2/ <br>
-https://www.tutorialspoint.com/multithreading-in-c <br>
-https://www.thegeekstuff.com/2012/04/terminate-c-thread/ <br>
-https://www.geeksforgeeks.org/ipc-shared-memory/ <br>
-https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_shared_memory.htm <br>
+<br>
 
 # Soal Nomor 4
 <h2>1. Penjelasan</h2>
