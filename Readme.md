@@ -355,6 +355,8 @@ static void mk_directory(const char *dirname)
 	
 <h2>Source</h2>
 https://linuxize.com/post/how-to-create-directories-in-linux-with-the-mkdir-command/
+https://linux.die.net/man/2/mkdir
+http://man7.org/linux/man-pages/man2/rename.2.html
 
 # Soal Nomor 4
 <h2>1. Penjelasan</h2>
