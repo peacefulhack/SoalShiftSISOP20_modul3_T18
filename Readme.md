@@ -361,8 +361,15 @@ static void mk_directory(const char *dirname)
 
 
 <h2>Kesulitan</h2>
-menentukan fungsi dan cara mengkategorikan dan memindahkan file ke folder tertentu, dan memastikan /* dapat berjalan dan mengkategorikan semua file 
+<p>menentukan fungsi dan cara mengkategorikan dan memindahkan file ke folder tertentu, dan memastikan /* dapat berjalan dan mengkategorikan semua file <p>
+	
 
+<h2>Source</h2>
+https://www.geeksforgeeks.org/multithreading-c-2/ <br>
+https://www.tutorialspoint.com/multithreading-in-c <br>
+https://www.thegeekstuff.com/2012/04/terminate-c-thread/ <br>
+https://www.geeksforgeeks.org/ipc-shared-memory/ <br>
+https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_shared_memory.htm <br>
 
 # Soal Nomor 4
 <h2>1. Penjelasan</h2>
