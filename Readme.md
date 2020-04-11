@@ -325,12 +325,88 @@ https://github.com/nikhilroxtomar/Multiple-Client-Server-Program-in-C-using-fork
 
 # Soal Nomor 3
 <h2>1. Penjelasan</h2>
-
+<p>mengkategorikan file dalam bentuk extension yang dimiliki dalam suatu folder. contohnya jika ada file yang berupa .txt dan .jpeg maka membuat folder baru bernama txt dan jpeg dan berisikan file masing masing dalam folder itu</p>
 
 <h2>Penyelesaian</h2>
+<p> menggunakan dua fungsi yaitu mv_file dan mkdir </p>
 
+```
+
+static void move_file(const char *filename);
+static void mk_directory(const char *dirname);
+
+```
+
+<p>dibawah ini mengulang sebanyak file yang ada</p>
+
+```
+    if(strcmp(argv[1], "-f")==0)
+    {
+        for(int i = 2;i<argc;i++)//start with first arg 
+        {
+            // categorise here
+            move_file(argv[i]);
+        }
+    }
+
+```
+<p> jika argument /*</p>
+```
+
+    else if(strcmp(argv[1], "/*")==0)
+    {
+        DIR *d;
+        struct dirent *dir;
+        d = opendir(".");
+        if (d) 
+        {
+         while ((dir = readdir(d)) != NULL) 
+         {
+            move_file(dir->d_name);
+         }
+
+         closedir(d);
+        }
+     }
+
+    return 0;
+}
+
+```
+<p> dua fungsi move_file dan mk_directory untuk memindahkan dan membuat folder</p>
+```
+static void move_file(const char *filename)
+{
+
+    char *dot = strrchr(filename, '.');
+    
+    mk_directory(dot + 1);
+
+    size_t namelen = strlen(dot + 1) + strlen(filename) + sizeof("/");
+
+    char *buffer = malloc(namelen);
+
+    sprintf(buffer, "%s/%s", dot + 1, filename);
+
+    rename(filename, buffer);
+
+    free(buffer);
+}
+
+
+static void mk_directory(const char *dirname)
+{
+
+	char *dot = strrchr(dirname, '.');
+
+   	mkdir(dirname, 0755);
+    
+}
+
+```
 
 <h2>Kesulitan</h2>
+menentukan fungsi dan cara mengkategorikan dan memindahkan file ke folder tertentu, dan memastikan /* dapat berjalan dan mengkategorikan semua file 
 
 
 # Soal Nomor 4
